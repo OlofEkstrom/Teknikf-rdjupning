@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="sv"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      data-theme="light">
+
+<th:block>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.5.0/event-calendar.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.5.0/event-calendar.min.js"></script>
+  <script src="/js/modal.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</th:block>
+
+<section layout:fragment="mainContent" class="d-flex justify-content-center align-items-center vh-100">
+  <div class="card shadow-sm p-4" style="max-width: 400px; width: 100%;">
+    <h1 class="text-center mb-4">Skapa ett konto</h1>
+
+    <div th:if="${param.error}" class="alert alert-danger text-center">
+      Ett fel inträffade. Vänligen försök igen.
+    </div>
+
+    <form th:action="@{/register/new}" method="post" th:object="${user}">
+      <div class="mb-3">
+        <input type="email" name="email" class="form-control" placeholder="Email"
+               th:field="*{email}" required
+               pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$"
+               title="Vänligen ange en giltig e-postadress"/>
+      </div>
+      <div class="mb-3">
+        <input type="text" name="firstname" class="form-control" placeholder="Förnamn"
+               th:field="*{firstName}" required
+               minlength="2" maxlength="50"
+               title="Förnamn måste vara mellan 2 och 50 tecken långt"/>
+      </div>
+      <div class="mb-3">
+        <input type="text" name="lastname" class="form-control" placeholder="Efternamn"
+               th:field="*{lastName}" required
+               minlength="2" maxlength="50"
+               title="Efternamn måste vara mellan 2 och 50 tecken långt"/>
+      </div>
+      <div class="mb-3">
+        <input type="password" name="password" class="form-control" placeholder="Lösenord"
+               th:field="*{password}" required
+               minlength="8"
+               pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{8,}$"
+               title="Lösenordet måste vara minst 8 tecken långt, och innehålla minst en siffra, en stor bokstav, en liten bokstav och ett specialtecken (!@#$%^&*)."/>
+      </div>
+      <div class="mb-3">
+        <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Bekräfta lösenord"
+               required title="Vänligen bekräfta ditt lösenord"/>
+      </div>
+      <div id="password-error" class="text-danger mb-3" style="display:none;">
+        Lösenorden matchar inte.
+      </div>
+      <div class="d-flex justify-content-between mb-3">
+        <button type="submit" class="btn btn-primary w-100 me-2">Skapa konto</button>
+        <a th:href="@{/login}" class="btn btn-danger w-100">Avbryt</a>
+      </div>
+    </form>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const password = document.querySelector('input[name="password"]');
+        const confirmPassword = document.getElementById("confirm_password");
+        const passwordError = document.getElementById("password-error");
+        function validatePasswords() {
+          if (password.value !== confirmPassword.value) {
+            passwordError.style.display = "block";
+            confirmPassword.setCustomValidity("Lösenorden matchar inte");
+          } else {
+            passwordError.style.display = "none";
+            confirmPassword.setCustomValidity("");
+          }
+        }
+
+        confirmPassword.addEventListener("input", validatePasswords);
+
+        document.querySelector('form').addEventListener("submit", function (e) {
+          validatePasswords();
+          if (confirmPassword.checkValidity() === false) {
+            e.preventDefault();
+          }
+        });
+      });
+    </script>
+
+  </div>
+</section>
+
+</html>

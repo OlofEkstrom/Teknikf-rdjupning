@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Welcome</title>
+    <style>
+        body {
+            text-align: center;
+            margin-top: 20%;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div th:if="${#authentication != null}">
+        <p>Välkommen, <span th:text="${#authentication.name}">User</span>!</p>
+        <a th:href="@{/logout}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logga ut</a>
+        <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;"></form>
+    </div>
+
+    <div th:unless="${#authentication != null}">
+        <p>Du är inte inloggad, vänligen <a th:href="@{/login}">logga in</a></p>
+    </div>
+</div>
+</body>
+</html>
